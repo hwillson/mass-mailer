@@ -1,0 +1,29 @@
+{
+  "name": "mass-mailer",
+  "version": "1.0.0",
+  "description": "Quick custom mass mailer.",
+  "main": "index.js",
+  "scripts": {
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "build": "npm run lint; tsc",
+    "watch": "tsc -w",
+    "serve": "nodemon --inspect --watch dist/ -d 1 ./dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hwillson/mass-mailer.git"
+  },
+  "author": "hugh@octonary.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hwillson/mass-mailer/issues"
+  },
+  "homepage": "https://github.com/hwillson/mass-mailer#readme",
+  "devDependencies": {
+    "@types/node": "^10.5.2",
+    "nodemon": "^1.18.3",
+    "tslint": "^5.11.0",
+    "typescript": "^2.9.2"
+  }
+}
