@@ -2,13 +2,17 @@
   "compilerOptions": {
     "rootDir": "./src",
     "module": "commonjs",
-    "target": "es5",
+    "target": "es6",
     "noImplicitAny": true,
     "removeComments": true,
     "sourceMap": true,
     "outDir": "./dist",
     "noEmitOnError": true,
-    "declaration": true
+    "declaration": true,
+    "baseUrl": ".",
+    "paths": {
+      "mailgun-js": ["src/types/mailgun-js"]
+    }
   },
   "exclude": [
     "node_modules",

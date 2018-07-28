@@ -4,6 +4,15 @@
     "tslint:recommended"
   ],
   "jsRules": {},
-  "rules": {},
-  "rulesDirectory": []
+  "rules": {
+    "quotemark": [true, "single"],
+    "no-console": [false],
+    "max-classes-per-file": [true, 2]
+  },
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": [
+      "src/types/mailgun-js/*"
+    ]
+  }
 }
