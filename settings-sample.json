@@ -1,0 +1,15 @@
+{
+  "csv": {
+    "path": "/some/dir/data.csv"
+  },
+  "email": {
+    "attachment": "/some/dir/test.pdf",
+    "html": "<p>This is a test!</p>",
+    "subject": "Test!"
+  },
+  "mailgun": {
+    "apiKey": "MAILGUN API KEY",
+    "domain": "MAILGUN DOMAIN",
+    "from": "from@somewhere.com"
+  }
+}
