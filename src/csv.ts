@@ -1,25 +1,24 @@
-import * as csv from 'csvtojson';
+import * as csv from "csvtojson";
 
 interface IEmail {
   email: string;
+  language?: string;
+  content1?: string;
+  content2?: string;
+  subject1?: string;
 }
 
-const loadCsvFromFile = async (csvFilename: string) => {
+export async function loadCsvFromFile(csvFilename: string) {
   let loadedCsv: IEmail[];
   try {
-    loadedCsv = await csv({
-      headers: ['email'],
-      noheader: true,
-    }).fromFile(csvFilename);
+    loadedCsv = await csv().fromFile(csvFilename);
   } catch (error) {
     throw new Error(`Unable to load CSV file "${csvFilename}": ${error}`);
   }
 
   if (!loadedCsv) {
-    throw new Error('The CSV file is empty');
+    throw new Error("The CSV file is empty");
   }
 
   return loadedCsv;
-};
-
-export { loadCsvFromFile };
+}

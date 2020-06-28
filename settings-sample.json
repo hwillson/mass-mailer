@@ -3,13 +3,28 @@
     "path": "/some/dir/data.csv"
   },
   "email": {
-    "attachment": "/some/dir/test.pdf",
-    "html": "<p>This is a test!</p>",
-    "subject": "Test!"
+    "attachment": {
+      "en": "/some/dir/attachment-en.pdf",
+      "fr": "/some/dir/attachment-fr.pdf"
+    },
+    "htmlFile": {
+      "en": "/some/dir/html-en.pdf",
+      "fr": "/some/dir/html-fr.pdf"
+    },
+    "subject": {
+      "en": "Hello!",
+      "fr": "Bonjour!"
+    }
   },
   "mailgun": {
     "apiKey": "MAILGUN API KEY",
-    "domain": "MAILGUN DOMAIN",
-    "from": "from@somewhere.com"
+    "domain": {
+      "en": "EN MAILGUN DOMAIN",
+      "fr": "FR MAILGUN DOMAIN"
+    },
+    "from": {
+      "en": "from-en@somewhere.com",
+      "fr": "from-fr@somewhere.com"
+    }
   }
 }
