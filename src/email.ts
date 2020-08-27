@@ -59,27 +59,31 @@ interface IBouncedResponse {
   paging: object;
 }
 
-// async function getBouncedEmails() {
-//   const data = await new Promise<IBouncedResponse>((resolve, reject) => {
-//     mailgun.get(
-//       `/${config.mailgun.domain}/bounces?limit=1000`,
-//       (error: object, response: object) => {
-//         if (error) {
-//           reject(error);
-//         } else {
-//           resolve(response as IBouncedResponse);
-//         }
-//       }
-//     );
-//   });
+async function getBouncedEmails(language = "en") {
+  const mailgun = mailgunJs({
+    apiKey: config.mailgun.apiKey,
+    domain: config.mailgun.domain[language],
+  });
 
-//   let bouncedEmails;
-//   if (data && data.items) {
-//     bouncedEmails = data.items.map((item: IBouncedRecord) => item.address);
-//   }
+  const data = await new Promise<IBouncedResponse>((resolve, reject) => {
+    mailgun.get(
+      `/${config.mailgun.domain[language]}/bounces?limit=1000`,
+      (error: object, response: object) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response as IBouncedResponse);
+        }
+      }
+    );
+  });
 
-//   return bouncedEmails;
-// }
+  let bouncedEmails;
+  if (data && data.items) {
+    bouncedEmails = data.items.map((item: IBouncedRecord) => item.address);
+  }
 
-// export { sendEmail, getBouncedEmails };
-export { sendEmail };
+  return bouncedEmails;
+}
+
+export { sendEmail, getBouncedEmails };

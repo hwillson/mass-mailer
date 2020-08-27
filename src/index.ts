@@ -4,7 +4,6 @@ import sleep from "./sleep";
 import config from "./config";
 import { loadCsvFromFile } from "./csv";
 import { sendEmail } from "./email";
-// import { sendEmail, getBouncedEmails } from './email';
 
 console.log("Emailing started ...");
 
@@ -34,14 +33,9 @@ console.log("Emailing started ...");
       from: config.mailgun.from[lang],
     });
     console.log(`${count}: emailed "${to}" ...`);
-    await sleep(3000);
+    await sleep(1000);
     count += 1;
   }
 
   console.log("Emailing finished.");
 })();
-
-// (async () => {
-//   const bouncedEmails = await getBouncedEmails();
-//   console.log(bouncedEmails);
-// })();
