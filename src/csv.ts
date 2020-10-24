@@ -5,6 +5,12 @@ interface IEmail {
   language?: string;
   content1?: string;
   content2?: string;
+  content3?: string;
+  content4?: string;
+  content5?: string;
+  content6?: string;
+  content7?: string;
+  content8?: string;
   subject1?: string;
 }
 

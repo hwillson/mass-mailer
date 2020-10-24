@@ -20,19 +20,40 @@ console.log("Emailing started ...");
   // Send an email to each address, with the specified delay between sends.
   let count = 1;
   for (const record of csv) {
-    const { email: to, content1, content2, subject1 } = record;
+    const {
+      email: to,
+      content1,
+      content2,
+      content3,
+      content4,
+      content5,
+      content6,
+      content7,
+      content8,
+      subject1,
+    } = record;
     const lang = record.language || "en";
-    const response = await sendEmail({
-      attachment: config.email.attachment && config.email.attachment[lang],
-      html: html[lang]
-        .replace("{CONTENT1}", content1)
-        .replace("{CONTENT2}", content2),
-      subject: config.email.subject[lang].replace("{SUBJECT1}", subject1),
-      to,
-      language: lang,
-      from: config.mailgun.from[lang],
-    });
-    console.log(`${count}: emailed "${to}" ...`);
+    try {
+      await sendEmail({
+        attachment: config.email.attachment && config.email.attachment[lang],
+        html: html[lang]
+          .replace(/{CONTENT1}/g, content1)
+          .replace(/{CONTENT2}/g, content2)
+          .replace(/{CONTENT3}/g, content3)
+          .replace(/{CONTENT4}/g, content4)
+          .replace(/{CONTENT5}/g, content5)
+          .replace(/{CONTENT6}/g, content6)
+          .replace(/{CONTENT7}/g, content7)
+          .replace(/{CONTENT8}/g, content8),
+        subject: config.email.subject[lang].replace("{SUBJECT1}", subject1),
+        to,
+        language: lang,
+        from: config.mailgun.from[lang],
+      });
+      console.log(`${count}: emailed "${to}" ...`);
+    } catch (error) {
+      console.log(error);
+    }
     await sleep(1000);
     count += 1;
   }

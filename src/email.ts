@@ -1,4 +1,5 @@
 import * as mailgunJs from "mailgun-js";
+import { writeFileSync } from "fs";
 
 import config from "./config";
 
@@ -67,7 +68,7 @@ async function getBouncedEmails(language = "en") {
 
   const data = await new Promise<IBouncedResponse>((resolve, reject) => {
     mailgun.get(
-      `/${config.mailgun.domain[language]}/bounces?limit=1000`,
+      `/${config.mailgun.domain[language]}/bounces?limit=100000`,
       (error: object, response: object) => {
         if (error) {
           reject(error);
@@ -82,6 +83,8 @@ async function getBouncedEmails(language = "en") {
   if (data && data.items) {
     bouncedEmails = data.items.map((item: IBouncedRecord) => item.address);
   }
+
+  writeFileSync("/tmp/bounces.json", JSON.stringify(bouncedEmails, null, 2));
 
   return bouncedEmails;
 }
