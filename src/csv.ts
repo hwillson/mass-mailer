@@ -11,6 +11,10 @@ interface IEmail {
   content6?: string;
   content7?: string;
   content8?: string;
+  content9?: string;
+  content10?: string;
+  content11?: string;
+  content12?: string;
   subject1?: string;
 }
 

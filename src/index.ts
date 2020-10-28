@@ -30,6 +30,10 @@ console.log("Emailing started ...");
       content6,
       content7,
       content8,
+      content9,
+      content10,
+      content11,
+      content12,
       subject1,
     } = record;
     const lang = record.language || "en";
@@ -38,13 +42,17 @@ console.log("Emailing started ...");
         attachment: config.email.attachment && config.email.attachment[lang],
         html: html[lang]
           .replace(/{CONTENT1}/g, content1)
-          .replace(/{CONTENT2}/g, content2)
-          .replace(/{CONTENT3}/g, content3)
-          .replace(/{CONTENT4}/g, content4)
-          .replace(/{CONTENT5}/g, content5)
-          .replace(/{CONTENT6}/g, content6)
-          .replace(/{CONTENT7}/g, content7)
-          .replace(/{CONTENT8}/g, content8),
+          .replace(/{CONTENT2}/g, content2 || "N/A")
+          .replace(/{CONTENT3}/g, content3 || "N/A")
+          .replace(/{CONTENT4}/g, content4 || "N/A")
+          .replace(/{CONTENT5}/g, content5 || "N/A")
+          .replace(/{CONTENT6}/g, content6 || "N/A")
+          .replace(/{CONTENT7}/g, content7 || "N/A")
+          .replace(/{CONTENT8}/g, content8)
+          .replace(/{CONTENT9}/g, content9)
+          .replace(/{CONTENT10}/g, content10)
+          .replace(/{CONTENT11}/g, content11)
+          .replace(/{CONTENT12}/g, content12),
         subject: config.email.subject[lang].replace("{SUBJECT1}", subject1),
         to,
         language: lang,
