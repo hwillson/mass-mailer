@@ -29,3 +29,7 @@ Example CSV header:
 5. Create a `MAIL_CONFIG` environment variable with the config file path.
 
 6. Run as `MAIL_CONFIG=/your/config.json node dist/index.js`
+
+### Export a list of recipient email addresses that had clicks
+
+Run as `MAIL_CONFIG=/your/config.json node dist/clicks.js`

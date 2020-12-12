@@ -41,6 +41,7 @@ console.log("Emailing started ...");
       await sendEmail({
         attachment: config.email.attachment && config.email.attachment[lang],
         html: html[lang]
+          .replace(/{EMAIL}/g, to)
           .replace(/{CONTENT1}/g, content1)
           .replace(/{CONTENT2}/g, content2 || "N/A")
           .replace(/{CONTENT3}/g, content3 || "N/A")
@@ -62,7 +63,8 @@ console.log("Emailing started ...");
     } catch (error) {
       console.log(error);
     }
-    await sleep(1000);
+    // await sleep(1000);
+    await sleep(500);
     count += 1;
   }
 

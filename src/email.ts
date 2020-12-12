@@ -4,7 +4,7 @@ import { writeFileSync } from "fs";
 import config from "./config";
 
 interface ISendData {
-  attachment?: string | Buffer | NodeJS.ReadWriteStream;
+  attachment?: string | Buffer | NodeJS.ReadWriteStream | string[];
   from?: string;
   to: string | string[];
   subject?: string;
@@ -13,7 +13,7 @@ interface ISendData {
   language: string;
 }
 
-function sendEmail({
+export function sendEmail({
   attachment,
   from = config.mailgun.from.en,
   html,
@@ -35,7 +35,7 @@ function sendEmail({
     mailgun
       .messages()
       .send(
-        { attachment, from, html, subject, to, text },
+        { attachment, from, html, subject, to, text } as any,
         (error, response) => {
           if (error) {
             reject(error);
@@ -60,7 +60,7 @@ interface IBouncedResponse {
   paging: object;
 }
 
-async function getBouncedEmails(language = "en") {
+export async function getBouncedEmails(language = "en") {
   const mailgun = mailgunJs({
     apiKey: config.mailgun.apiKey,
     domain: config.mailgun.domain[language],
@@ -79,9 +79,12 @@ async function getBouncedEmails(language = "en") {
     );
   });
 
-  let bouncedEmails;
+  const bouncedEmails: string[] = [];
   if (data && data.items) {
-    bouncedEmails = data.items.map((item: IBouncedRecord) => item.address);
+    data.items.forEach((item: IBouncedRecord) => {
+      const year = new Date(item.created_at).getFullYear();
+      if (year === 2020) bouncedEmails.push(item.address);
+    });
   }
 
   writeFileSync("/tmp/bounces.json", JSON.stringify(bouncedEmails, null, 2));
@@ -89,4 +92,64 @@ async function getBouncedEmails(language = "en") {
   return bouncedEmails;
 }
 
-export { sendEmail, getBouncedEmails };
+interface IClickRecord {
+  event: string;
+  recipient: string;
+}
+
+interface IClickResponse {
+  items: IClickRecord[];
+  paging: {
+    next: string;
+  };
+}
+
+function fetchClickRecords(uri?: string, language = "en") {
+  const mailgun = mailgunJs({
+    apiKey: config.mailgun.apiKey,
+    domain: config.mailgun.domain[language],
+  });
+
+  return new Promise<IClickResponse>((resolve, reject) => {
+    mailgun.get(
+      `${uri}?limit=300&event=clicked`,
+      (error: object, response: object) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response as IClickResponse);
+        }
+      }
+    );
+  });
+}
+
+export async function exportClickEmails(language = "en") {
+  const emails = new Set<string>();
+
+  let next = `/${config.mailgun.domain[language]}/events`;
+  while (next) {
+    const data = await fetchClickRecords(next);
+    if (data && data.items && data.items.length > 0) {
+      data.items.forEach((item: IClickRecord) => {
+        if (item.event === "clicked") {
+          emails.add(item.recipient);
+        }
+      });
+
+      next = data.paging.next
+        ? data.paging.next.split("https://api.mailgun.net/v3")[1]
+        : undefined;
+
+      console.log(data.items);
+      console.log(next);
+    } else {
+      next = undefined;
+    }
+  }
+
+  const emailArray = Array.from(emails);
+  writeFileSync("/tmp/clicks.json", JSON.stringify(emailArray, null, 2));
+
+  return emailArray;
+}
