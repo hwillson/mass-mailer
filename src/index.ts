@@ -3,7 +3,7 @@ import sleep from "./sleep";
 
 import config from "./config";
 import { loadCsvFromFile } from "./csv";
-import { sendEmail } from "./email";
+import { sendEmail, ISendData } from "./email";
 
 console.log("Emailing started ...");
 
@@ -38,7 +38,7 @@ console.log("Emailing started ...");
     } = record;
     const lang = record.language || "en";
     try {
-      await sendEmail({
+      const params: ISendData = {
         attachment: config.email.attachment && config.email.attachment[lang],
         html: html[lang]
           .replace(/{EMAIL}/g, to)
@@ -58,7 +58,13 @@ console.log("Emailing started ...");
         to,
         language: lang,
         from: config.mailgun.from[lang],
-      });
+      };
+
+      if (config.mailgun.tags) {
+        params.tags = config.mailgun.tags;
+      }
+
+      await sendEmail(params);
       console.log(`${count}: emailed "${to}" ...`);
     } catch (error) {
       console.log(error);
