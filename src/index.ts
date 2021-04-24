@@ -38,6 +38,7 @@ console.log("Emailing started ...");
     } = record;
     const lang = record.language || "en";
     try {
+      const cleanTo = to.trim();
       const params: ISendData = {
         attachment: config.email.attachment && config.email.attachment[lang],
         html: html[lang]
@@ -55,7 +56,7 @@ console.log("Emailing started ...");
           .replace(/{CONTENT11}/g, content11)
           .replace(/{CONTENT12}/g, content12),
         subject: config.email.subject[lang].replace("{SUBJECT1}", subject1),
-        to,
+        to: cleanTo,
         language: lang,
         from: config.mailgun.from[lang],
       };
@@ -65,7 +66,7 @@ console.log("Emailing started ...");
       }
 
       await sendEmail(params);
-      console.log(`${count}: emailed "${to}" ...`);
+      console.log(`${count}: emailed "${cleanTo}" ...`);
     } catch (error) {
       console.log(error);
     }
