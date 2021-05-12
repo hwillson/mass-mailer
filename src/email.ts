@@ -12,6 +12,7 @@ export interface ISendData {
   text?: string;
   language: string;
   tags?: string[];
+  bcc?: string | string[];
 }
 
 export function sendEmail({
@@ -23,6 +24,7 @@ export function sendEmail({
   to,
   language = "en",
   tags,
+  bcc,
 }: ISendData) {
   if (!to || !subject) {
     throw new Error("Missing mandatory email data");
@@ -37,7 +39,16 @@ export function sendEmail({
     mailgun
       .messages()
       .send(
-        { attachment, from, html, subject, to, text, "o:tag": tags } as any,
+        {
+          attachment,
+          from,
+          html,
+          subject,
+          to,
+          text,
+          "o:tag": tags,
+          bcc,
+        } as any,
         (error, response) => {
           if (error) {
             reject(error);

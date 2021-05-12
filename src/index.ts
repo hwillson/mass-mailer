@@ -59,6 +59,7 @@ console.log("Emailing started ...");
         to: cleanTo,
         language: lang,
         from: config.mailgun.from[lang],
+        bcc: config.mailgun.bcc && config.mailgun.bcc[lang],
       };
 
       if (config.mailgun.tags) {
