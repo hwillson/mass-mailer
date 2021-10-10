@@ -35,20 +35,25 @@ export function sendEmail({
     domain: config.mailgun.domain[language],
   });
 
+  const options = {
+    attachment,
+    from,
+    html,
+    subject,
+    to,
+    text,
+    "o:tag": tags,
+  } as any;
+
+  if (bcc) {
+    options.bcc = bcc;
+  }
+
   return new Promise((resolve, reject) => {
     mailgun
       .messages()
       .send(
-        {
-          attachment,
-          from,
-          html,
-          subject,
-          to,
-          text,
-          "o:tag": tags,
-          bcc,
-        } as any,
+        options,
         (error, response) => {
           if (error) {
             reject(error);
