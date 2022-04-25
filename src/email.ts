@@ -12,6 +12,7 @@ export interface ISendData {
   text?: string;
   language: string;
   tags?: string[];
+  cc?: string | string[];
   bcc?: string | string[];
 }
 
@@ -24,6 +25,7 @@ export function sendEmail({
   to,
   language = "en",
   tags,
+  cc,
   bcc,
 }: ISendData) {
   if (!to || !subject) {
@@ -44,6 +46,10 @@ export function sendEmail({
     text,
     "o:tag": tags,
   } as any;
+
+  if (cc) {
+    options.cc = cc;
+  }
 
   if (bcc) {
     options.bcc = bcc;
