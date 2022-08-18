@@ -56,18 +56,13 @@ export function sendEmail({
   }
 
   return new Promise((resolve, reject) => {
-    mailgun
-      .messages()
-      .send(
-        options,
-        (error, response) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(response);
-          }
-        }
-      );
+    mailgun.messages().send(options, (error, response) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(response);
+      }
+    });
   });
 }
 
@@ -81,40 +76,60 @@ interface IBouncedRecord {
 
 interface IBouncedResponse {
   items: IBouncedRecord[];
-  paging: object;
+  paging: Record<string, any>;
 }
 
-export async function getBouncedEmails(language = "en") {
+async function nextBouncedEmails({
+  url,
+  language = "en",
+  bouncedEmails = [],
+}: {
+  url?: string;
+  language?: string;
+  bouncedEmails: string[];
+}) {
   const mailgun = mailgunJs({
     apiKey: config.mailgun.apiKey,
     domain: config.mailgun.domain[language],
   });
 
+  const mailgunUrl =
+    url || `/${config.mailgun.domain[language]}/bounces?limit=1000`;
+
   const data = await new Promise<IBouncedResponse>((resolve, reject) => {
-    mailgun.get(
-      `/${config.mailgun.domain[language]}/bounces?limit=100000`,
-      (error: object, response: object) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(response as IBouncedResponse);
-        }
+    mailgun.get(mailgunUrl, (error: object, response: object) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(response as IBouncedResponse);
       }
-    );
+    });
   });
 
-  const bouncedEmails: string[] = [];
-  if (data && data.items) {
-    data.items.forEach((item: IBouncedRecord) => {
-      const year = new Date(item.created_at).getFullYear();
-      if (year === 2021) bouncedEmails.push(item.address);
-      bouncedEmails.push(item.address);
-    });
+  if (data) {
+    if (data.items) {
+      data.items.forEach((item: IBouncedRecord) => {
+        bouncedEmails.push(item.address);
+      });
+    }
+
+    if (data.paging && data.paging.next) {
+      const nextUrl = data.paging.next.replace(
+        "https://api.mailgun.net/v3",
+        ""
+      );
+      if (nextUrl.includes("page=next")) {
+        await nextBouncedEmails({ url: nextUrl, bouncedEmails });
+      }
+    }
   }
+}
 
+export async function getBouncedEmails(language = "en") {
+  const bouncedEmails: string[] = [];
+  await nextBouncedEmails({ bouncedEmails, language });
+  console.log(bouncedEmails);
   writeFileSync("/tmp/bounces.json", JSON.stringify(bouncedEmails, null, 2));
-
-  return bouncedEmails;
 }
 
 interface IClickRecord {
