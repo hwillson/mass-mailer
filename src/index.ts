@@ -72,8 +72,8 @@ console.log("Emailing started ...");
     } catch (error) {
       console.log(error);
     }
-    // await sleep(1000);
-    await sleep(500);
+    // await sleep(500);
+    await sleep(4000);
     count += 1;
   }
 
