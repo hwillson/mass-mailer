@@ -55,7 +55,7 @@ console.log("Emailing started ...");
           .replace(/{CONTENT10}/g, content10)
           .replace(/{CONTENT11}/g, content11)
           .replace(/{CONTENT12}/g, content12),
-        subject: config.email.subject[lang].replace("{SUBJECT1}", subject1),
+        subject: config.email.subject[lang].replace(/{SUBJECT1}/g, subject1),
         to: cleanTo,
         language: lang,
         from: config.mailgun.from[lang],
