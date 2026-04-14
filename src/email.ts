@@ -130,6 +130,7 @@ export async function getBouncedEmails(language = "en") {
   await nextBouncedEmails({ bouncedEmails, language });
   console.log(bouncedEmails);
   writeFileSync("/tmp/bounces.json", JSON.stringify(bouncedEmails, null, 2));
+  return bouncedEmails;
 }
 
 interface IClickRecord {
